@@ -1,5 +1,7 @@
 plugins {
     id 'java'
+    id "org.sonarqube" version "3.4.0.2513"
+    id "jacoco"
 }
 
 group 'dev.kukim'
@@ -26,6 +28,7 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    finalizedBy jacocoTestReport
 }
 
 task stage(dependsOn: ['build', 'clean'])
@@ -46,5 +49,22 @@ jar {
         }
     }
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "ku-kim_Next-Step"
+        property "sonar.organization", "ku-kim"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
+}
+
+// https://docs.diffblue.com/knowledge-base/cli/coverage-report/#how-to-generate-a-jacoco-report-gradle
+jacocoTestReport {
+    dependsOn test
+
+    reports {
+        xml.enabled true // xml 미설정
+    }
 }
 
